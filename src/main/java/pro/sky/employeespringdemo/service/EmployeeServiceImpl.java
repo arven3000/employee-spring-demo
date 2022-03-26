@@ -25,6 +25,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public Employee[] employeesList() {
+        return employees;
+    }
+
+    @Override
     public Employee addEmployee(String firstName, String lastName) {
 
         Employee employee = new Employee(firstName, lastName);
