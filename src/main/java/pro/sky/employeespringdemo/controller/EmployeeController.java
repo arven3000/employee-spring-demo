@@ -5,13 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.employeespringdemo.dto.Employee;
-import pro.sky.employeespringdemo.exception.EmployeeArrayIsFullException;
 import pro.sky.employeespringdemo.exception.EmployeeIsPresentException;
 import pro.sky.employeespringdemo.exception.EmployeeNotFoundException;
 import pro.sky.employeespringdemo.service.EmployeeService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -26,16 +26,14 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public Employee[] employeesList() {
-        return employeeService.employeesList();
+    public ArrayList<Employee> getEmployeesList() {
+        return employeeService.getEmployeesList();
     }
 
     @GetMapping("/add")
     public Employee addEmployee(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName) {
         try {
             return employeeService.addEmployee(firstName, lastName);
-        } catch (EmployeeArrayIsFullException ex) {
-            throw new EmployeeArrayIsFullException(ex.getMessage());
         } catch (EmployeeIsPresentException e) {
             throw new EmployeeIsPresentException(e.getMessage());
         }
@@ -62,12 +60,6 @@ public class EmployeeController {
     @ExceptionHandler(EmployeeNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleException404(EmployeeNotFoundException ex, HttpServletRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
-        return new ResponseEntity<>(getMapResponseEntity(ex.getMessage(), request, status), status);
-    }
-
-    @ExceptionHandler(EmployeeArrayIsFullException.class)
-    public ResponseEntity<Map<String, String>> handleException400(EmployeeArrayIsFullException ex, HttpServletRequest request) {
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         return new ResponseEntity<>(getMapResponseEntity(ex.getMessage(), request, status), status);
     }
 
