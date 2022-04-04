@@ -11,7 +11,6 @@ import pro.sky.employeespringdemo.service.EmployeeService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -26,8 +25,8 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ArrayList<Employee> getEmployeesList() {
-        return employeeService.getEmployeesList();
+    public Map<String, Employee> getEmployeesList() {
+        return employeeService.getEmployees();
     }
 
     @GetMapping("/add")

@@ -5,55 +5,50 @@ import pro.sky.employeespringdemo.dto.Employee;
 import pro.sky.employeespringdemo.exception.EmployeeIsPresentException;
 import pro.sky.employeespringdemo.exception.EmployeeNotFoundException;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private final ArrayList<Employee> employees = new ArrayList<>();
+    private final Map<String, Employee> employees = new HashMap<>();
 
     public EmployeeServiceImpl() {
         super();
     }
 
     @Override
-    public ArrayList<Employee> getEmployeesList() {
+    public Map<String, Employee> getEmployees() {
         return employees;
     }
 
     @Override
     public Employee addEmployee(String firstName, String lastName) {
-
-        Employee employee = new Employee(firstName, lastName);
-
-        if (employees.contains(employee)) {
-            throw new EmployeeIsPresentException("Сотрудник уже существует.");
+        String key = firstName + " " + lastName;
+        if (employees.containsKey(key)) {
+            throw new EmployeeIsPresentException("Сотрудник уже присутсвует.");
         }
-        employees.add(employee);
-        return employee;
+        employees.put(key, new Employee(firstName, lastName));
+        return employees.get(key);
     }
 
     @Override
     public Employee deleteEmployee(String firstName, String lastName) {
-
+        String key = firstName + " " + lastName;
         Employee employee = new Employee(firstName, lastName);
-
-        for (int i = 0; i < employees.size(); i++) {
-            if (employees.get(i).equals(employee)) {
-                employees.remove(i);
-                return employee;
-            }
+        if (employees.containsKey(key)) {
+            employees.remove(key);
+            return employee;
         }
         throw new EmployeeNotFoundException("Сотрудник не найден.");
     }
 
     @Override
     public Employee findEmployee(String firstName, String lastName) {
-        Employee emp = new Employee(firstName, lastName);
-        if (employees.contains(emp)) {
-            return emp;
-        } else {
-            throw new EmployeeNotFoundException("Сотрудник не найден.");
+        String key = firstName + " " + lastName;
+        if (employees.containsKey(key)) {
+            return employees.get(key);
         }
+        throw new EmployeeNotFoundException("Сотрудник не найден.");
     }
 }
