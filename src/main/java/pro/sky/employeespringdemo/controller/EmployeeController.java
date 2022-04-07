@@ -11,6 +11,7 @@ import pro.sky.employeespringdemo.service.EmployeeService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -30,9 +31,11 @@ public class EmployeeController {
     }
 
     @GetMapping("/add")
-    public Employee addEmployee(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName) {
+    public Employee addEmployee(@RequestParam("firstName") String firstName
+            , @RequestParam("lastName") String lastName, @RequestParam("departmentId") int departmentId
+            , @RequestParam("salary") double salary) {
         try {
-            return employeeService.addEmployee(firstName, lastName);
+            return employeeService.addEmployee(firstName, lastName, departmentId, salary);
         } catch (EmployeeIsPresentException e) {
             throw new EmployeeIsPresentException(e.getMessage());
         }
@@ -54,6 +57,26 @@ public class EmployeeController {
         } catch (EmployeeNotFoundException e) {
             throw new EmployeeNotFoundException(e.getMessage());
         }
+    }
+
+    @GetMapping("/departments/min-salary")
+    public Employee minSalary(@RequestParam("departmentId") int departmentId) {
+        return employeeService.minSalary(departmentId);
+    }
+
+    @GetMapping(path = "/departments/max-salary")
+    public Employee maxSalary(@RequestParam("departmentId") int departmentId) {
+        return employeeService.maxSalary(departmentId);
+    }
+
+    @GetMapping("/departments/all")
+    public ArrayList<Employee> allByDepartment(@RequestParam("departmentId") int departmentId) {
+        return employeeService.filterByDepartment(departmentId);
+    }
+
+    @GetMapping("/departments/all/")
+    public ArrayList<Employee> allByDepartments() {
+        return employeeService.employeeByDepartment();
     }
 
     @ExceptionHandler(EmployeeNotFoundException.class)
