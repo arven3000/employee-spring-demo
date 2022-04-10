@@ -7,55 +7,41 @@ import org.springframework.web.bind.annotation.*;
 import pro.sky.employeespringdemo.dto.Employee;
 import pro.sky.employeespringdemo.exception.EmployeeIsPresentException;
 import pro.sky.employeespringdemo.exception.EmployeeNotFoundException;
-import pro.sky.employeespringdemo.service.EmployeeService;
+import pro.sky.employeespringdemo.service.DepartmentService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/employee")
-public class EmployeeController {
+@RequestMapping("/department")
+public class DepartmentController {
 
-    EmployeeService employeeService;
+    DepartmentService departmentService;
 
-    public EmployeeController(EmployeeService employeeService) {
-        this.employeeService = employeeService;
+    public DepartmentController(DepartmentService departmentService) {
+        this.departmentService = departmentService;
     }
 
-    @GetMapping
-    public Map<String, Employee> getEmployeesList() {
-        return employeeService.getEmployees();
+    @GetMapping("/min-salary")
+    public Employee minSalary(@RequestParam("departmentId") int departmentId) {
+        return departmentService.minSalary(departmentId);
     }
 
-    @GetMapping("/add")
-    public Employee addEmployee(@RequestParam("firstName") String firstName
-            , @RequestParam("lastName") String lastName, @RequestParam("departmentId") int departmentId
-            , @RequestParam("salary") double salary) {
-        try {
-            return employeeService.addEmployee(firstName, lastName, departmentId, salary);
-        } catch (EmployeeIsPresentException e) {
-            throw new EmployeeIsPresentException(e.getMessage());
-        }
+    @GetMapping(path = "/max-salary")
+    public Employee maxSalary(@RequestParam("departmentId") int departmentId) {
+        return departmentService.maxSalary(departmentId);
     }
 
-    @GetMapping("/remove")
-    public Employee deleteEmployee(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName) {
-        try {
-            return employeeService.deleteEmployee(firstName, lastName);
-        } catch (EmployeeNotFoundException e) {
-            throw new EmployeeNotFoundException(e.getMessage());
-        }
-    }
-
-    @GetMapping("/find")
-    public Employee findEmployee(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName) {
-        try {
-            return employeeService.findEmployee(firstName, lastName);
-        } catch (EmployeeNotFoundException e) {
-            throw new EmployeeNotFoundException(e.getMessage());
+    @GetMapping("/all")
+    public ArrayList<Employee> allByDepartment(@RequestParam(value = "departmentId", required = false) Optional<Integer> departmentId) {
+        if (departmentId.isPresent()) {
+            return departmentService.filterByDepartment(departmentId.get());
+        } else {
+            return departmentService.employeeByDepartment();
         }
     }
 
@@ -87,4 +73,3 @@ public class EmployeeController {
         return answer;
     }
 }
-
