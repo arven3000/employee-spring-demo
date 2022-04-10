@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/employee")
@@ -70,13 +72,12 @@ public class EmployeeController {
     }
 
     @GetMapping("/departments/all")
-    public ArrayList<Employee> allByDepartment(@RequestParam("departmentId") int departmentId) {
-        return employeeService.filterByDepartment(departmentId);
-    }
-
-    @GetMapping("/departments/all/")
-    public ArrayList<Employee> allByDepartments() {
-        return employeeService.employeeByDepartment();
+    public ArrayList<Employee> allByDepartment(@RequestParam(value = "departmentId", required = false) Optional<Integer> departmentId) {
+        if (departmentId.isPresent()) {
+            return employeeService.filterByDepartment(departmentId.get());
+        } else {
+            return employeeService.employeeByDepartment();
+        }
     }
 
     @ExceptionHandler(EmployeeNotFoundException.class)

@@ -16,10 +16,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final Map<String, Employee> employees = new HashMap<>();
 
-    public EmployeeServiceImpl() {
-        super();
-    }
-
     @Override
     public Map<String, Employee> getEmployees() {
         return employees;
@@ -72,7 +68,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     /*Найти сотрудника с минимальной зарплатой*/
     @Override
     public Employee minSalary(ArrayList<Employee> employees) {
-        return employees.stream().min(Comparator.comparing(Employee::getSalary)).get();
+        return employees.stream().min(Comparator.comparing(Employee::getSalary)).orElseThrow(() -> new EmployeeNotFoundException("Список пуст"));
     }
 
     /*Найти сотрудника с максимальной заплатой по отделу*/
@@ -85,7 +81,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     /*Найти сотрудника с максимальной зарплатой*/
     @Override
     public Employee maxSalary(ArrayList<Employee> employees) {
-        return employees.stream().max(Comparator.comparing(Employee::getSalary)).get();
+        return employees.stream().max(Comparator.comparing(Employee::getSalary)).orElseThrow(() -> new EmployeeNotFoundException("Список пуст"));
     }
 
 

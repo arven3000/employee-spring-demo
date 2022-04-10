@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public interface EmployeeService {
+
     Map<String, Employee> getEmployees();
 
     ArrayList<Employee> filterByDepartment(int departmentId);
