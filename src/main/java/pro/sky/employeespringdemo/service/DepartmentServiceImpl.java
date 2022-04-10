@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
 
-    EmployeeService employeeService;
+    private final EmployeeService employeeService;
 
     @Autowired
-    public void setEmployeeService(EmployeeService employeeService) {
+    public DepartmentServiceImpl(EmployeeService employeeService) {
         this.employeeService = employeeService;
     }
 
@@ -36,7 +36,8 @@ public class DepartmentServiceImpl implements DepartmentService {
     /*Найти сотрудника с минимальной зарплатой*/
     @Override
     public Employee minSalary(ArrayList<Employee> employees) {
-        return employees.stream().min(Comparator.comparing(Employee::getSalary)).orElseThrow(() -> new EmployeeNotFoundException("Список пуст"));
+        return employees.stream().min(Comparator.comparing(Employee::getSalary))
+                .orElseThrow(() -> new EmployeeNotFoundException("Список пуст"));
     }
 
     /*Найти сотрудника с максимальной заплатой по отделу*/
@@ -49,7 +50,8 @@ public class DepartmentServiceImpl implements DepartmentService {
     /*Найти сотрудника с максимальной зарплатой*/
     @Override
     public Employee maxSalary(ArrayList<Employee> employees) {
-        return employees.stream().max(Comparator.comparing(Employee::getSalary)).orElseThrow(() -> new EmployeeNotFoundException("Список пуст"));
+        return employees.stream().max(Comparator.comparing(Employee::getSalary))
+                .orElseThrow(() -> new EmployeeNotFoundException("Список пуст"));
     }
 
 

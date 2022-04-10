@@ -19,7 +19,7 @@ import java.util.Map;
 @RequestMapping("/employee")
 public class EmployeeController {
 
-    EmployeeService employeeService;
+    private final EmployeeService employeeService;
 
     public EmployeeController(EmployeeService employeeService) {
         this.employeeService = employeeService;
@@ -31,9 +31,9 @@ public class EmployeeController {
     }
 
     @GetMapping("/add")
-    public Employee addEmployee(@RequestParam("firstName") String firstName
-            , @RequestParam("lastName") String lastName, @RequestParam("departmentId") int departmentId
-            , @RequestParam("salary") double salary) {
+    public Employee addEmployee(@RequestParam("firstName") String firstName,
+                                @RequestParam("lastName") String lastName, @RequestParam("departmentId") int departmentId,
+                                @RequestParam("salary") double salary) {
         try {
             return employeeService.addEmployee(firstName, lastName, departmentId, salary);
         } catch (EmployeeIsPresentException e) {
@@ -42,7 +42,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/remove")
-    public Employee deleteEmployee(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName) {
+    public Employee deleteEmployee(@RequestParam("firstName") String firstName,
+                                   @RequestParam("lastName") String lastName) {
         try {
             return employeeService.deleteEmployee(firstName, lastName);
         } catch (EmployeeNotFoundException e) {
@@ -51,7 +52,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/find")
-    public Employee findEmployee(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName) {
+    public Employee findEmployee(@RequestParam("firstName") String firstName,
+                                 @RequestParam("lastName") String lastName) {
         try {
             return employeeService.findEmployee(firstName, lastName);
         } catch (EmployeeNotFoundException e) {
@@ -60,19 +62,22 @@ public class EmployeeController {
     }
 
     @ExceptionHandler(EmployeeNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleException404(EmployeeNotFoundException ex, HttpServletRequest request) {
+    public ResponseEntity<Map<String, String>> handleException404(EmployeeNotFoundException ex,
+                                                                  HttpServletRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         return new ResponseEntity<>(getMapResponseEntity(ex.getMessage(), request, status), status);
     }
 
     @ExceptionHandler(EmployeeIsPresentException.class)
-    public ResponseEntity<Map<String, String>> handleException500(EmployeeIsPresentException ex, HttpServletRequest request) {
+    public ResponseEntity<Map<String, String>> handleException500(EmployeeIsPresentException ex,
+                                                                  HttpServletRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         return new ResponseEntity<>(getMapResponseEntity(ex.getMessage(), request, status), status);
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<Map<String, String>> handleException500(MissingServletRequestParameterException ex, HttpServletRequest request) {
+    public ResponseEntity<Map<String, String>> handleException500(MissingServletRequestParameterException ex,
+                                                                  HttpServletRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         return new ResponseEntity<>(getMapResponseEntity(ex.getMessage(), request, status), status);
     }

@@ -20,7 +20,7 @@ import java.util.Optional;
 @RequestMapping("/department")
 public class DepartmentController {
 
-    DepartmentService departmentService;
+    private final DepartmentService departmentService;
 
     public DepartmentController(DepartmentService departmentService) {
         this.departmentService = departmentService;
@@ -37,7 +37,8 @@ public class DepartmentController {
     }
 
     @GetMapping("/all")
-    public ArrayList<Employee> allByDepartment(@RequestParam(value = "departmentId", required = false) Optional<Integer> departmentId) {
+    public ArrayList<Employee> allByDepartment(@RequestParam(value = "departmentId",
+            required = false) Optional<Integer> departmentId) {
         if (departmentId.isPresent()) {
             return departmentService.filterByDepartment(departmentId.get());
         } else {
@@ -46,19 +47,22 @@ public class DepartmentController {
     }
 
     @ExceptionHandler(EmployeeNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleException404(EmployeeNotFoundException ex, HttpServletRequest request) {
+    public ResponseEntity<Map<String, String>> handleException404(EmployeeNotFoundException ex,
+                                                                  HttpServletRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         return new ResponseEntity<>(getMapResponseEntity(ex.getMessage(), request, status), status);
     }
 
     @ExceptionHandler(EmployeeIsPresentException.class)
-    public ResponseEntity<Map<String, String>> handleException500(EmployeeIsPresentException ex, HttpServletRequest request) {
+    public ResponseEntity<Map<String, String>> handleException500(EmployeeIsPresentException ex,
+                                                                  HttpServletRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         return new ResponseEntity<>(getMapResponseEntity(ex.getMessage(), request, status), status);
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<Map<String, String>> handleException500(MissingServletRequestParameterException ex, HttpServletRequest request) {
+    public ResponseEntity<Map<String, String>> handleException500(MissingServletRequestParameterException ex,
+                                                                  HttpServletRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         return new ResponseEntity<>(getMapResponseEntity(ex.getMessage(), request, status), status);
     }
