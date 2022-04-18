@@ -13,30 +13,26 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final Map<String, Employee> employees = new HashMap<>();
 
-    public EmployeeServiceImpl() {
-        super();
-    }
-
     @Override
     public Map<String, Employee> getEmployees() {
         return employees;
     }
 
     @Override
-    public Employee addEmployee(String firstName, String lastName) {
+    public Employee addEmployee(String firstName, String lastName, int departmentId, double salary) {
         String key = firstName + " " + lastName;
         if (employees.containsKey(key)) {
             throw new EmployeeIsPresentException("Сотрудник уже присутсвует.");
         }
-        employees.put(key, new Employee(firstName, lastName));
+        employees.put(key, new Employee(firstName, lastName, departmentId, salary));
         return employees.get(key);
     }
 
     @Override
     public Employee deleteEmployee(String firstName, String lastName) {
         String key = firstName + " " + lastName;
-        Employee employee = new Employee(firstName, lastName);
         if (employees.containsKey(key)) {
+            Employee employee = employees.get(key);
             employees.remove(key);
             return employee;
         }
