@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import pro.sky.employeespringdemo.dto.Employee;
 import pro.sky.employeespringdemo.exception.EmployeeIsPresentException;
 import pro.sky.employeespringdemo.exception.EmployeeNotFoundException;
+import pro.sky.employeespringdemo.exception.EmployeeTextDataException;
 import pro.sky.employeespringdemo.service.EmployeeService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -70,21 +71,7 @@ public class EmployeeController {
         return new ResponseEntity<>(getMapResponseEntity(ex.getMessage(), request, status), status);
     }
 
-    @ExceptionHandler(EmployeeIsPresentException.class)
-    public ResponseEntity<Map<String, String>> handleException500(EmployeeIsPresentException ex,
-                                                                  HttpServletRequest request) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        return new ResponseEntity<>(getMapResponseEntity(ex.getMessage(), request, status), status);
-    }
-
-    @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<Map<String, String>> handleException500(MissingServletRequestParameterException ex,
-                                                                  HttpServletRequest request) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        return new ResponseEntity<>(getMapResponseEntity(ex.getMessage(), request, status), status);
-    }
-
-    private Map<String, String> getMapResponseEntity(String message, HttpServletRequest request, HttpStatus status) {
+    static Map<String, String> getStringStringMap(String message, HttpServletRequest request, HttpStatus status) {
         Map<String, String> answer = new LinkedHashMap<>();
         answer.put("message ", message);
         answer.put("error ", status.getReasonPhrase());
@@ -92,6 +79,30 @@ public class EmployeeController {
         answer.put("timestamp ", LocalDateTime.now().toString());
         answer.put("path ", request.getRequestURI());
         return answer;
+    }
+
+    @ExceptionHandler(EmployeeTextDataException.class)
+    public ResponseEntity<Map<String, String>> handleException400(EmployeeTextDataException ex, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        return new ResponseEntity<>(getMapResponseEntity(ex.getMessage(), request, status), status);
+    }
+
+    @ExceptionHandler(EmployeeIsPresentException.class)
+    public ResponseEntity<Map<String, String>> handleException400(EmployeeIsPresentException ex,
+                                                                  HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        return new ResponseEntity<>(getMapResponseEntity(ex.getMessage(), request, status), status);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<Map<String, String>> handleException400(MissingServletRequestParameterException ex,
+                                                                  HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        return new ResponseEntity<>(getMapResponseEntity(ex.getMessage(), request, status), status);
+    }
+
+    private Map<String, String> getMapResponseEntity(String message, HttpServletRequest request, HttpStatus status) {
+        return getStringStringMap(message, request, status);
     }
 }
 

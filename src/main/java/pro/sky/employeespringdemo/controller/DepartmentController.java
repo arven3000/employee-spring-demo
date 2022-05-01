@@ -11,11 +11,11 @@ import pro.sky.employeespringdemo.exception.EmployeeNotFoundException;
 import pro.sky.employeespringdemo.service.DepartmentService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import static pro.sky.employeespringdemo.controller.EmployeeController.getStringStringMap;
 
 @RestController
 @RequestMapping("/department")
@@ -70,12 +70,6 @@ public class DepartmentController {
     }
 
     private Map<String, String> getMapResponseEntity(String message, HttpServletRequest request, HttpStatus status) {
-        Map<String, String> answer = new LinkedHashMap<>();
-        answer.put("message ", message);
-        answer.put("error ", status.getReasonPhrase());
-        answer.put("status ", String.valueOf(status.value()));
-        answer.put("timestamp ", LocalDateTime.now().toString());
-        answer.put("path ", request.getRequestURI());
-        return answer;
+        return getStringStringMap(message, request, status);
     }
 }
